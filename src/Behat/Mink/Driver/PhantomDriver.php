@@ -16,7 +16,8 @@ class PhantomDriver implements DriverInterface
      */
     function setSession(Session $session)
     {
-        
+        $path = __DIR__ . '/Server/server.js';
+        echo system ('phantomjs ' . $path);
     }
 
     /**
@@ -24,7 +25,7 @@ class PhantomDriver implements DriverInterface
      */
     function start()
     {
-        
+        echo "phantom start driver";
     }
 
     /**
