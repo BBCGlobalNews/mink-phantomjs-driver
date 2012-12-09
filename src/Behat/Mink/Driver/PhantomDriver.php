@@ -26,7 +26,7 @@ class PhantomDriver implements DriverInterface
      */
     public function start()
     {
-        
+        echo "phantom start driver";
     }
 
     /**
