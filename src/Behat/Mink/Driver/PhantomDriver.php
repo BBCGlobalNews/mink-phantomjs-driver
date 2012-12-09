@@ -9,6 +9,8 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 
 class PhantomDriver implements DriverInterface
 {
+    private $session;
+
     /**
      * Sets driver's current session.
      *
@@ -16,7 +18,7 @@ class PhantomDriver implements DriverInterface
      */
     public function setSession(Session $session)
     {
-        
+        $this->session = $session;
     }
 
     /**
