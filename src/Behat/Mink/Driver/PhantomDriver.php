@@ -7,9 +7,14 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 
+use Symfony\Component\Process\Process;
+
 class PhantomDriver implements DriverInterface
 {
     private $session;
+    private $threshold = 2000000;
+    private $started = false;
+    private $process;
 
     /**
      * Sets driver's current session.
@@ -26,7 +31,31 @@ class PhantomDriver implements DriverInterface
      */
     public function start()
     {
-        echo "phantom start driver";
+        $path = __DIR__ . '/Server/server.js';
+
+        $phantom = new Process('phantomjs ' . $path);
+        $this->process = $phantom;
+        $phantom->start();
+
+        if (!$phantom->isSuccessful()) {
+            throw new \RuntimeException($phantom->getErrorOutput());
+        }
+
+        $time = 0;
+
+        // Wait for the server to start up
+        while ($phantom->isRunning() && $time < $this->threshold) {
+            // @todo !! NOT WORKING, output is empty :(
+            if ($output = $phantom->getOutput() == 'Starting service on port 8899') {
+                $this->started = true;
+                return;
+            }
+
+            usleep(1000);
+            $time += 1000;
+        }
+
+        throw new \Exception('Unable to summon Phantom');
     }
 
     /**
@@ -36,7 +65,7 @@ class PhantomDriver implements DriverInterface
      */
     public function isStarted()
     {
-        
+        return $this->started;
     }
 
     /**
@@ -477,11 +506,16 @@ class PhantomDriver implements DriverInterface
     /**
      * Waits some time or until JS condition turns true.
      *
-     * @param integer $time      time in milliseconds
+     * @param integer time      time in milliseconds
      * @param string  $condition JS condition
      */
     public function wait($time, $condition)
     {
         
+    }
+
+    public function __destruct()
+    {
+        $this->process->stop();
     }
 }
