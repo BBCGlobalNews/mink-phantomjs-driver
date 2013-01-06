@@ -15,6 +15,7 @@ class PhantomDriver implements DriverInterface
     private $threshold = 2000000;
     private $started = false;
     private $process;
+    private $port = 8899;
 
     /**
      * Sets driver's current session.
@@ -33,20 +34,18 @@ class PhantomDriver implements DriverInterface
     {
         $path = __DIR__ . '/Server/server.js';
 
-        $phantom = new Process('phantomjs ' . $path);
-        $this->process = $phantom;
-        $phantom->start();
+        $this->process = new Process('phantomjs ' . $path);
+        $this->process->start();
 
-        if (!$phantom->isSuccessful()) {
-            throw new \RuntimeException($phantom->getErrorOutput());
+        if (!$this->process->isSuccessful()) {
+            throw new \RuntimeException($this->process->getErrorOutput());
         }
 
         $time = 0;
 
         // Wait for the server to start up
-        while ($phantom->isRunning() && $time < $this->threshold) {
-            // @todo !! NOT WORKING, output is empty :(
-            if ($output = $phantom->getOutput() == 'Starting service on port 8899') {
+        while ($this->process->isRunning() && $time < $this->threshold) {
+            if (trim($output = $this->process->getOutput()) == 'Starting service on port ' . $this->port) {
                 $this->started = true;
                 return;
             }
@@ -73,7 +72,7 @@ class PhantomDriver implements DriverInterface
      */
     public function stop()
     {
-        
+        $connection = $this->connection();
     }
 
     /**
@@ -514,8 +513,20 @@ class PhantomDriver implements DriverInterface
         
     }
 
+    public function getConnection()
+    {
+        if (!$this->connection) {
+            $this->connection = fsockopen('localhost', $this->port);
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * Destroys the process as process->stop is not working correctly
+     */
     public function __destruct()
     {
-        $this->process->stop();
+        $this->stop();
     }
 }
