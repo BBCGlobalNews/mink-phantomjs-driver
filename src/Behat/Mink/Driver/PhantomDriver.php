@@ -9,6 +9,50 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 
 class PhantomDriver implements DriverInterface
 {
+
+    const BROWSER_NAME = 'phantomjs';
+
+    /**
+     * The current Mink session
+     * @var \Behat\Mink\Session
+     */
+    private $session;
+
+    /**
+     * Whether the browser has been started
+     * @var Boolean
+     */
+    private $started = false;
+
+    /**
+     * The WebDriver instance
+     * @var WebDriver
+     */
+    private $webDriver;
+
+    /**
+     * The WebDriverSession instance
+     * @var \WebDriver\Session
+     */
+    private $wdSession;
+
+    /**
+     * The timeout configuration
+     * @var array
+     */
+    private $timeouts = array();
+
+    /**
+     * Instantiates the driver.
+     *
+     * @param string    $wdHost The WebDriver host
+     */
+    public function __construct($wdHost = 'http://localhost:4444/wd/hub')
+    {
+
+        $this->setWebDriver(new WebDriver($wdHost));
+    }
+
     /**
      * Sets driver's current session.
      *
@@ -16,7 +60,7 @@ class PhantomDriver implements DriverInterface
      */
     public function setSession(Session $session)
     {
-        
+        $this->session = $session;
     }
 
     /**
@@ -24,7 +68,18 @@ class PhantomDriver implements DriverInterface
      */
     public function start()
     {
-        
+        try {
+            // second arg in the webdriver session is desiredCapabilities but removing for now
+            $this->wdSession = $this->webDriver->session(self::BROWSER_NAME, []);
+            $this->applyTimeouts();
+        } catch (\Exception $e) {
+            throw new DriverException('Could not open connection: '.$e->getMessage(), 0, $e);
+        }
+
+        if (!$this->wdSession) {
+            throw new DriverException('Could not connect to a Selenium 2 / WebDriver server');
+        }
+        $this->started = true;
     }
 
     /**
@@ -556,6 +611,16 @@ class PhantomDriver implements DriverInterface
     public function submitForm($xpath)
     {
         // TODO: Implement submitForm() method.
+    }
+
+    /**
+     * Sets the WebDriver instance
+     *
+     * @param WebDriver $webDriver An instance of the WebDriver class
+     */
+    public function setWebDriver(WebDriver $webDriver)
+    {
+        $this->webDriver = $webDriver;
     }
 
 
