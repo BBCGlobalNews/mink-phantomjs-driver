@@ -482,4 +482,81 @@ class PhantomDriver implements DriverInterface
     {
         
     }
+
+    /**
+     * Capture a screenshot of the current window.
+     *
+     * @return  string  screenshot of MIME type image/* depending
+     *   on driver (e.g., image/png, image/jpeg)
+     */
+    public function getScreenshot()
+    {
+        // TODO: Implement getScreenshot() method.
+    }
+
+    /**
+     * Return the names of all open windows.
+     *
+     * @return array    array of all open windows
+     */
+    public function getWindowNames()
+    {
+        // TODO: Implement getWindowNames() method.
+    }
+
+    /**
+     * Return the name of the currently active window.
+     *
+     * @return string    the name of the current window
+     */
+    public function getWindowName()
+    {
+        // TODO: Implement getWindowName() method.
+    }
+
+    /**
+     * Checks whether select option, located by it's XPath query, is selected.
+     *
+     * @param string $xpath
+     *
+     * @return Boolean
+     */
+    public function isSelected($xpath)
+    {
+        // TODO: Implement isSelected() method.
+    }
+
+    /**
+     * Set the dimensions of the window.
+     *
+     * @param integer $width set the window width, measured in pixels
+     * @param integer $height set the window height, measured in pixels
+     * @param string $name window name (null for the main window)
+     */
+    public function resizeWindow($width, $height, $name = null)
+    {
+        // TODO: Implement resizeWindow() method.
+    }
+
+    /**
+     * Maximize the window if it is not maximized already
+     *
+     * @param string $name window name (null for the main window)
+     */
+    public function maximizeWindow($name = null)
+    {
+        // TODO: Implement maximizeWindow() method.
+    }
+
+    /**
+     * Submits the form.
+     *
+     * @param string $xpath Xpath.
+     */
+    public function submitForm($xpath)
+    {
+        // TODO: Implement submitForm() method.
+    }
+
+
 }
