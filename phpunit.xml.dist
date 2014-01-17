@@ -18,7 +18,7 @@
     </testsuites>
 
     <php>
-        <server name="WEB_FIXTURES_HOST" value="http://pal.sandbox.dev.bbc.co.uk/mink-phantomjs-tests"/>
+        <server name="WEB_FIXTURES_HOST" value="http://pal.sandbox.dev.bbc.co.uk"/>
         <!--server name="WEB_FIXTURES_HOST" value="http://test.mink.dev" /-->
         <!--server name="WEB_FIXTURES_BROWSER" value="firefox" /-->
         <!--server name="DRIVER_HOST" value="localhost" /-->
